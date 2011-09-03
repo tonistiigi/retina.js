@@ -54,5 +54,8 @@ retina.addParser new DefaultParser
 
 #setup cycle for propery changes 
 
-
-    
+# Make accessible to require() in node, global if directly lined in the browser
+if module?.exports?
+    module.exports = retina
+else
+    this.retina = retina
