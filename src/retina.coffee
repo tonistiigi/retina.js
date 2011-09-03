@@ -1,10 +1,25 @@
 
 class DefaultParser
+    # proposed format myimage@.png, myimage@2x.png, myimage-3@4x.png
+    _pattern: /([\.\-_][0-9])?@(([0-9])+x)?\.[a-z]+$/i
+    
     isValidFilename: (filename) -> 
+        !!filename.match @_pattern 
 
     zoomLevelsForFilename: (filename) ->
+        match = filename.match @_pattern
+        if match[1]
+            parseInt match[1..], 10
+        else
+            2
         
-    filnameForZoom: (baseFilename, zoom) -> 
+    filnameForZoom: (baseFilename, zoom) ->
+        if zoom == 1
+            baseFilename
+        else
+            match = baseFilename.match /(.+)@(.*?)\.([a-z]+)$/i
+            match[1] + "@" + Math.pow(2, zoom - 1) + "x." + match[3]
+        
         
 class StaticParser
     constructor: (@conf=[]) ->
