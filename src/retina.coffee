@@ -64,11 +64,24 @@ parsers = []
 
 calc_zoom_level = -> 
 
-add_parser = (parser) ->  
+add_parser = (parser) ->
+    parsers.push parser
+    #todo: schedule next scan
+
+delete_parser = (parser) ->
+    if parser in parsers
+        index = parsers.indexOf parser
+        parsers.splice index, 1
+        #todo: clear all controls that are already active and using this parser
 
 clear_parsers = ->
+    delete_parser parsers[0] while parsers.length
+    return
     
 set_parser = (parser) ->
+    if parsers.length != 1 or parsers[0] != parser
+        clear_parsers
+        add_parser parser
 
 scan = ->
     
