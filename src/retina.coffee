@@ -1,7 +1,7 @@
 
 class DefaultParser
     # proposed format myimage@.png, myimage@2x.png, myimage-3@4x.png
-    _pattern: /([\.\-_][0-9])?@(([0-9])+x)?\.[a-z]+$/i
+    _pattern: /([\.\-_][0-9])?@(1x)?\.[a-z]+$/i
     
     isValidFilename: (filename) -> 
         !!filename.match @_pattern 
@@ -9,11 +9,11 @@ class DefaultParser
     zoomLevelsForFilename: (filename) ->
         match = filename.match @_pattern
         if match[1]
-            parseInt match[1..], 10
+            parseInt match[1][1..], 10
         else
             2
         
-    filnameForZoom: (baseFilename, zoom) ->
+    filenameForZoom: (baseFilename, zoom) ->
         if zoom == 1
             baseFilename
         else
@@ -46,7 +46,7 @@ class StaticParser
             # default if only defined as string
             2
         
-    filnameForZoom: (baseFilename, zoom) -> 
+    filenameForZoom: (baseFilename, zoom) -> 
         conf = @_confForFilename baseFilename
         filename = conf[0]
         if conf.length == 1 or conf.length > 1 and typeof conf[1] == "number"
