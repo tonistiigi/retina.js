@@ -37,7 +37,7 @@ class StaticParser
         conf = @_confForFilename filename
         if conf.length > 1
             # second param is number - this is the zoom level
-            if conf[1] == "number"
+            if typeof conf[1] == "number"
                 conf[1]
             # count all the filenames in conf
             else
@@ -46,7 +46,7 @@ class StaticParser
             # default if only defined as string
             2
         
-    filenameForZoom: (baseFilename, zoom) -> 
+    filenameForZoom: (baseFilename, zoom) ->
         conf = @_confForFilename baseFilename
         filename = conf[0]
         if conf.length == 1 or conf.length > 1 and typeof conf[1] == "number"
@@ -54,9 +54,9 @@ class StaticParser
             if zoom == 1
                 baseFilename
             else
-                parts = baseFilename.match /(.+)\.([a-z]+$)/i
-                zoom_sfx = if zoom == 1 then "" else "@" + Math.pow 2, zoom-1
-                "#{parts[1]}#{zoom_sfx}.#{parts[2]}"
+                parts = baseFilename.match /(.+?)(@)?([0-9]+x)?\.([a-z]+$)/i
+                zoom_sfx = if zoom == 1 then "" else "@" + (Math.pow 2, zoom-1) + "x"
+                "#{parts[1]}#{zoom_sfx}.#{parts[4]}"
         else
             conf[zoom-1]
 
