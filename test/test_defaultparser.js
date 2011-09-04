@@ -76,8 +76,7 @@
         tests = files[baseName];
         for (zoom in tests) {
           name = tests[zoom];
-          test.strictEqual(df.filenameForZoom(baseName, parseInt(zoom, 10)), name);
-          "Filename on zoom " + zoom + " for " + baseName + " is not " + name;
+          test.strictEqual(df.filenameForZoom(baseName, parseInt(zoom, 10)), name, "Filename on zoom " + zoom + " for " + baseName + " is not " + name);
         }
       }
       return test.done();

@@ -6,13 +6,15 @@
     <script src="../vendor/nodeunit/nodeunit.js"></script>
     <script src="test_main.js"></script>
     <script src="test_defaultparser.js"></script>
+    <script src="test_staticparser.js"></script>
   </head>
   <body>
     <h1 id="nodeunit-header">Retina.js Test Suite</h1>
     <script>
       nodeunit.run({
         'Main tests': test_main,
-        'DefaultParser tests': test_defaultparser
+        'DefaultParser tests': test_defaultparser,
+        'StaticParser tests': test_staticparser
       });
     </script>
   </body>
