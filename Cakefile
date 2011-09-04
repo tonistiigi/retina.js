@@ -28,6 +28,10 @@ task 'build', 'Compile CoffeeScript source files', ->
 task 'watch', 'Recompile CoffeeScript source files when modified', ->
   build true
 
+task 'dist', 'Create distrubution version with UglifyJS', ->
+  coffee = spawn 'uglifyjs', ['--unsafe', '-o', 'dist/retina.min.js', '--define', 'RELEASE_MODE', 'lib/retina.js']
+  coffee.stderr.on 'data', (data) -> print data.toString()
+
 task 'test', 'Run the test suite', ->
   build ->
     require.paths.unshift __dirname + "/lib"
