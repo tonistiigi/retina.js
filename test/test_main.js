@@ -4,6 +4,22 @@
   test_main = {
     "retina is present": function(test) {
       test.ok(retina);
+      test.strictEqual("object", typeof retina);
+      return test.done();
+    },
+    "some basic functions are present": function(test) {
+      var functions, name, _i, _len, _ref;
+      functions = "addParser allParsers removeParser clearParsers setParser scan setManualMode activateElement ignoreElement";
+      _ref = functions.split(" ");
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        name = _ref[_i];
+        test.ok(retina != null ? retina[name] : void 0, "Missing retina." + name);
+        test.strictEqual("function", typeof (retina != null ? retina[name] : void 0), "retina." + name + " is not a function");
+      }
+      return test.done();
+    },
+    "allParsers() return array": function(test) {
+      test.ok(retina.allParsers() instanceof Array);
       return test.done();
     }
   };

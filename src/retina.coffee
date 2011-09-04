@@ -68,14 +68,14 @@ add_parser = (parser) ->
     parsers.push parser
     #todo: schedule next scan
 
-delete_parser = (parser) ->
+remove_parser = (parser) ->
     if parser in parsers
         index = parsers.indexOf parser
         parsers.splice index, 1
         #todo: clear all controls that are already active and using this parser
 
 clear_parsers = ->
-    delete_parser parsers[0] while parsers.length
+    remove_parser parsers[0] while parsers.length
     return
     
 set_parser = (parser) ->
@@ -92,9 +92,9 @@ activate_element = (element, url="", width=0, height=0) ->
 ignore_element = (element) ->
 
 retina =
-    parsers: parsers
-    
+    allParsers: -> parsers.slice()
     addParser: add_parser
+    removeParser: remove_parser
     clearParsers: clear_parsers
     setParser: set_parser
     scan: scan
