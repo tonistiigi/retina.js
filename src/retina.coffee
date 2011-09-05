@@ -60,9 +60,29 @@ class StaticParser
         else
             conf[zoom-1]
 
+_current_zoom_level = 1
 parsers = []
 
-calc_zoom_level = -> 
+
+
+_get_zoom_level = ->
+    userAgent = this.navigator?.userAgent?
+    
+    # Only Webkit based browsers currently supported
+    if this.window and userAgent.match /Webkit/i
+        # Mobile browsers
+        if userAgent.match /Mobile/i
+            screenWidth =   if this.orientation in [0, 180]
+                                this.screen.width
+                            else 
+                                this.screen.height
+            if this.devicePixelRatio
+                screenWidth *= this.devicePixelRatio
+            this.window.innerWidth / screenWidth
+        else
+            this.window.innerWidth / this.document.width
+    else
+        1
 
 add_parser = (parser) ->
     for func in "isValidFilename zoomLevelsForFilename filenameForZoom".split(" ")
