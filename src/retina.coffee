@@ -84,7 +84,7 @@ clear_parsers = ->
     
 set_parser = (parser) ->
     if parsers.length != 1 or parsers[0] != parser
-        clear_parsers
+        clear_parsers()
         add_parser parser
 
 scan = ->
