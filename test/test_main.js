@@ -18,8 +18,21 @@
       }
       return test.done();
     },
-    "allParsers() return array": function(test) {
+    "allParsers() returns array": function(test) {
       test.ok(retina.allParsers() instanceof Array);
+      return test.done();
+    },
+    "DefaultParser is added automatically": function(test) {
+      var parsers;
+      parsers = retina.allParsers();
+      test.strictEqual(parsers.length, 1, "Parsers array doesn't contain one object");
+      test.ok(parsers[0] instanceof retina.DefaultParser, "Default parser is not instance of DefaultParser");
+      return test.done();
+    },
+    "Adding invalid parser": function(test) {
+      test.throws((function() {
+        return retina.addParser();
+      }), "Invalid parser should throw");
       return test.done();
     }
   };

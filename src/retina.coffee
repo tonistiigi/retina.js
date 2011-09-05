@@ -65,6 +65,10 @@ parsers = []
 calc_zoom_level = -> 
 
 add_parser = (parser) ->
+    for func in "isValidFilename zoomLevelsForFilename filenameForZoom".split(" ")
+        if typeof parser[func] != "function"
+            throw "Invalid parser object. No method #{func} found."
+
     parsers.push parser
     #todo: schedule next scan
 
