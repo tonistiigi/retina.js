@@ -10,17 +10,15 @@ class DefaultParser
 
     zoomLevelsForFilename: (filename) ->
         match = filename.match @_pattern
-        if match[1]
-            parseInt match[1][1..], 10
-        else
-            2
+        max = if match[1] then parseInt match[1][1..], 10 else 2
+        Math.pow 2, i-1 for i in [1..max]
         
     filenameForZoom: (baseFilename, zoom) ->
         if zoom == 1
             baseFilename
         else
             match = baseFilename.match /(.+)@(.*?)\.([a-z]+)$/i
-            match[1] + "@" + Math.pow(2, zoom - 1) + "x." + match[3]
+            match[1] + "@" + zoom + "x." + match[3]
         
         
 class StaticParser
@@ -37,7 +35,7 @@ class StaticParser
 
     zoomLevelsForFilename: (filename) ->
         conf = @_confForFilename filename
-        if conf.length > 1
+        max = if conf.length > 1
             # second param is number - this is the zoom level
             if typeof conf[1] == "number"
                 conf[1]
@@ -47,7 +45,8 @@ class StaticParser
         else
             # default if only defined as string
             2
-        
+        Math.pow 2, i-1 for i in [1..max]
+
     filenameForZoom: (baseFilename, zoom) ->
         conf = @_confForFilename baseFilename
         filename = conf[0]
@@ -57,7 +56,7 @@ class StaticParser
                 baseFilename
             else
                 parts = baseFilename.match /(.+?)(@)?([0-9]+x)?\.([a-z]+$)/i
-                zoom_sfx = if zoom == 1 then "" else "@" + (Math.pow 2, zoom-1) + "x"
+                zoom_sfx = if zoom == 1 then "" else "@" + zoom + "x"
                 "#{parts[1]}#{zoom_sfx}.#{parts[4]}"
         else
             conf[zoom-1]
