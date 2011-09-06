@@ -130,6 +130,8 @@ set_manual_mode = (manual=true) ->
 activate_element = (element, url="") ->    
     if element in _active_elements then return
     
+    _ignore_list.splice (ignore_list.indexOf element), 1 if element in _ignore_list
+    
     is_image = element instanceof root.HTMLImageElement
     
     url or= if is_image then element.src else element.style['backgroundImage'].match(/url\((.+)\)/)[1]
@@ -143,7 +145,11 @@ activate_element = (element, url="") ->
     false
 
 ignore_element = (element) ->
-    
+    if element in _active_elements
+        index = _active_elements.indexOf element
+        _active_elements.splice index, 1
+        _active_controls.splice index, 1
+    _ignore_list.push element
 
 retina =
     allParsers: -> parsers.slice()
