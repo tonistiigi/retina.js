@@ -68,16 +68,32 @@ class RetinaControl
         @width = 0
         @height = 0
         @zoom = 1
-    
+
+        @setImagePath @url
+
+        init_size = (img) =>    
+            @width = img.naturalWidth
+            @height = img.naturalHeight
+            @setZoom _current_zoom_level
+
+        if @is_image and @element.complete then init_size @element
+        else @cachePath @url, init_size
+        
+
     setZoom: (zoom) ->
         
-    
+
     setImagePath: (url) ->
-        
-    
-    cachePath: (callback) ->
-        
-    
+        if @is_image
+            @element.src = url
+        else
+            @element.style['backgroundImage'] = "url(#{url})"
+
+    cachePath: (url, callback) ->
+        img = new Image
+        img.addEventListener "load", -> callback img
+        img.src = url
+
 
 _current_zoom_level = 1
 _ignore_list = []
