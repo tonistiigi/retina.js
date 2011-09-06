@@ -1,4 +1,6 @@
 
+root = this
+
 class DefaultParser
     # proposed format myimage@.png, myimage@2x.png, myimage-3@4x.png
     _pattern: /([\.\-_][0-9])?@(1x)?\.[a-z]+$/i
@@ -63,24 +65,22 @@ class StaticParser
 _current_zoom_level = 1
 parsers = []
 
-
-
 _get_zoom_level = ->
-    userAgent = this.navigator?.userAgent?
+    userAgent = root.navigator?.userAgent
     
     # Only Webkit based browsers currently supported
-    if this.window and userAgent.match /Webkit/i
+    if root.window and userAgent.match /Webkit/i
         # Mobile browsers
-        if userAgent.match /Mobile/i
-            screenWidth =   if this.orientation in [0, 180]
-                                this.screen.width
+        (if userAgent.match /Mobile/i
+            screenWidth =   if root.orientation in [0, 180]
+                                root.screen.width
                             else 
-                                this.screen.height
-            if this.devicePixelRatio
-                screenWidth *= this.devicePixelRatio
-            this.window.innerWidth / screenWidth
+                                root.screen.height
+            if root.devicePixelRatio
+                screenWidth *= root.devicePixelRatio
         else
-            this.window.innerWidth / this.document.width
+            root.document.width
+        ) / root.window.innerWidth
     else
         1
 
@@ -123,12 +123,19 @@ retina =
     setParser: set_parser
     scan: scan
     setManualMode: set_manual_mode
-        
+
     activateElement: activate_element    
     ignoreElement: ignore_element
-    
+
     DefaultParser: DefaultParser
     StaticParser: StaticParser
+
+# Export some private method on dev verions
+# so the functionality can be tested
+if not RELEASE_MODE?
+    retina._get_zoom_level = _get_zoom_level
+
+
 
 retina.addParser new DefaultParser
 

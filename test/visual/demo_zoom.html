@@ -4,7 +4,39 @@
     <title>Retina.js Demo Zoom</title>
     <script src="../../lib/retina.js"></script>
     <script src="demo_zoom.js"></script>
+    <style type="text/css">
+        body {
+            font-family: Tahoma;
+        }
+        div#description {
+            margin: 30px 10px;
+            font-size: 15px;
+            padding: 10px;
+            background: rgba(255,150,0,.1);
+        }
+        img#test_image {
+            width: 200px;
+            height: 100px;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        div#scale_value {
+            position: fixed;
+            top: 5px;
+            font-size: 16px;
+            right: 10px;
+        }
+    </style>
   </head>
   <body>
+      <div id="description">
+        This page demos Retina.js page zoom detection.
+        If everything is working correctly the test image should always appear 200x100 in screen pixels
+        without any anti-alias scaling. Zoom in/out on page to test the code.
+        Image size is recalculated after every second.
+      </div>
+      <img src="assets/pixel_perfect_test_image.png" id="test_image"/>
+      <div id="scale_value">0%</div>
   </body>
 </html>
