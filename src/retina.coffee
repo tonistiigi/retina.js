@@ -62,7 +62,14 @@ class StaticParser
         else
             conf[zoom-1]
 
+
+
 _current_zoom_level = 1
+_ignore_list = []
+
+_active_elements = []
+_active_controls = []
+
 parsers = []
 
 _get_zoom_level = ->
@@ -85,7 +92,7 @@ _get_zoom_level = ->
         1
 
 add_parser = (parser) ->
-    for func in "isValidFilename zoomLevelsForFilename filenameForZoom".split(" ")
+    for func in "isValidFilename zoomLevelsForFilename filenameForZoom".split " "
         if typeof parser[func] != "function"
             throw "Invalid parser object. No method #{func} found."
 
@@ -107,13 +114,36 @@ set_parser = (parser) ->
         clear_parsers()
         add_parser parser
 
+_schedule_scan = (delay) ->
+
 scan = ->
-    
+    if root.document?.querySelectorAll
+        for element in root.document.querySelectorAll "img[src],*[style*='background-image']"
+            if element in _ignore_list then continue
+            if not element in _active_elements
+                activate_element element
+        _schedule_scan 3000
+
+
 set_manual_mode = (manual=true) ->
     
-activate_element = (element, url="", width=0, height=0) ->
+activate_element = (element, url="") ->    
+    if element in _active_elements then return
     
+    is_image = element instanceof root.HTMLImageElement
+    
+    url or= if is_image then element.src else element.style['backgroundImage'].match(/url\((.+)\)/)[1]
+    
+    for parser in parsers
+        if parser.isValidFilename url
+            control = new RetinaControl element, parser is_image, url
+            _active_controls.push control
+            _active_elements.push element
+            return true
+    false
+
 ignore_element = (element) ->
+    
 
 retina =
     allParsers: -> parsers.slice()
