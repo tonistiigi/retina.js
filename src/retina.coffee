@@ -62,7 +62,22 @@ class StaticParser
         else
             conf[zoom-1]
 
-
+class RetinaControl
+    constructor: (@element, @parser, @is_image, @url) ->
+        @complete = 0
+        @width = 0
+        @height = 0
+        @zoom = 1
+    
+    setZoom: (zoom) ->
+        
+    
+    setImagePath: (url) ->
+        
+    
+    cachePath: (callback) ->
+        
+    
 
 _current_zoom_level = 1
 _ignore_list = []
