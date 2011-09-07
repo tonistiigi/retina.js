@@ -164,7 +164,11 @@ set_parser = (parser) ->
         clear_parsers()
         add_parser parser
 
-_schedule_scan = (delay) ->
+_schedule_scan = do -> 
+    next = 0
+    (delay) ->
+        root.clearTimeout next if next
+        next = root.setTimeout scan, delay if delay >= 0
 
 scan = ->
     if root.document?.querySelectorAll
@@ -225,9 +229,19 @@ if not RELEASE_MODE?
 
 retina.addParser new DefaultParser
 
-#setup cycle for zoom changes
+root.addEventListener "load", ->
 
-#setup cycle for propery changes 
+    scan()
+
+    setInterval ->
+            zoom = _get_zoom_level()
+            if zoom != _current_zoom_level
+                _current_zoom_level = zoom
+                for control in _active_controls
+                    control.setZoom zoom
+                _schedule_scan 1
+        , 1000
+
 
 # Make accessible to require() in node, global if directly lined in the browser
 if module?.exports?
