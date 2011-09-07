@@ -43,14 +43,15 @@
       var df, name, zoom, zoomlevels;
       df = new retina.DefaultParser;
       zoomlevels = {
-        "myimage@.png": 2,
-        "zoom/set@1x.jpg": 2,
-        "filename-2@.png": 2,
-        "image.3@.jpg": 3
+        "myimage@.png": [1, 2],
+        "zoom/set@1x.jpg": [1, 2],
+        "filename-2@.png": [1, 2],
+        "image3@.jpg": [1, 2],
+        "image.3@.jpg": [1, 2, 4]
       };
       for (name in zoomlevels) {
         zoom = zoomlevels[name];
-        test.strictEqual(df.zoomLevelsForFilename(name), zoom, "Calculated zoomlevels for " + name + " do not match " + zoom);
+        test.deepEqual(df.zoomLevelsForFilename(name), zoom, "Calculated zoomlevels for " + name + " do not match " + zoom);
       }
       return test.done();
     },
@@ -69,7 +70,7 @@
         "with/image/count-3@.jpg": {
           1: "with/image/count-3@.jpg",
           2: "with/image/count-3@2x.jpg",
-          3: "with/image/count-3@4x.jpg"
+          4: "with/image/count-3@4x.jpg"
         }
       };
       for (baseName in files) {

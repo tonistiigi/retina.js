@@ -36,14 +36,14 @@
       "Zoomlevels from filenames": function(test) {
         var name, zoom, zoomlevels;
         zoomlevels = {
-          "myimage.png": 2,
-          "with/zoom/levels.png": 3,
-          "path/to/my_photo.png": 2,
-          "assets/pattern_m.png": 3
+          "myimage.png": [1, 2],
+          "with/zoom/levels.png": [1, 2, 4],
+          "path/to/my_photo.png": [1, 2],
+          "assets/pattern_m.png": [1, 2, 4]
         };
         for (name in zoomlevels) {
           zoom = zoomlevels[name];
-          test.strictEqual(this.sp.zoomLevelsForFilename(name), zoom, "Calculated zoomlevels for " + name + " do not match " + zoom);
+          test.deepEqual(this.sp.zoomLevelsForFilename(name), zoom, "Calculated zoomlevels for " + name + " do not match " + zoom);
         }
         return test.done();
       },

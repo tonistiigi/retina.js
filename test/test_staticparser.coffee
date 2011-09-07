@@ -57,9 +57,14 @@ test_staticparser =
             test.done()
 
         "Zoomlevels from filenames": (test) ->
-            zoomlevels = "myimage.png":2,  "with/zoom/levels.png":3,    "path/to/my_photo.png":2,    "assets/pattern_m.png":3
+            zoomlevels = 
+                "myimage.png": [1, 2]
+                "with/zoom/levels.png": [1, 2, 4]
+                "path/to/my_photo.png": [1, 2]
+                "assets/pattern_m.png": [1, 2, 4]
+                
             for name, zoom of zoomlevels
-                test.strictEqual (@sp.zoomLevelsForFilename name), zoom, "Calculated zoomlevels for #{name} do not match #{zoom}"
+                test.deepEqual (@sp.zoomLevelsForFilename name), zoom, "Calculated zoomlevels for #{name} do not match #{zoom}"
             test.done()
 
         "Correct filenames for other zoomLevels": (test) ->
