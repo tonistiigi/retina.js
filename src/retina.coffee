@@ -1,6 +1,15 @@
 
 root = this
 
+_current_zoom_level = 1
+_ignore_list = []
+
+_active_elements = []
+_active_controls = []
+
+parsers = []
+
+
 class DefaultParser
     # proposed format myimage@.png, myimage@2x.png, myimage-3@4x.png
     _pattern: /([\.\-_][0-9])?@(1x)?\.[a-z]+$/i
@@ -70,9 +79,7 @@ class RetinaControl
 
         @setImagePath @url
 
-        init_size = (img) =>    
-            @width = img.naturalWidth
-            @height = img.naturalHeight
+        init_size = (@width, @height) =>
             @setZoom _current_zoom_level
 
         if @is_image and @element.complete then init_size @element
@@ -80,7 +87,23 @@ class RetinaControl
         
 
     setZoom: (zoom) ->
+        levels = parser.zoomLevelsForFilename @url
+        [level] = levels[-1..]
+        for l in levels
+            level = l if l>=zoom and l<level
+
+        return if level == @zoom
         
+        path = parser.filenameForZoom level
+        
+        @cachePath path, ->
+            @setImagePath path
+        #todo: size fixing
+        
+        @zoom = level
+    
+    release: ->
+        @setZoom 1
 
     setImagePath: (url) ->
         if @is_image
@@ -89,18 +112,15 @@ class RetinaControl
             @element.style['backgroundImage'] = "url(#{url})"
 
     cachePath: (url, callback) ->
+        @cached = {} if @cached?
+        return callback @cached[url] if url of @cached
+        
         img = new Image
-        img.addEventListener "load", -> callback img
+        img.addEventListener "load", -> 
+            @cached[url] = [img.naturalWidth, img.naturalHeight]
+            callback @cached[url]...
         img.src = url
 
-
-_current_zoom_level = 1
-_ignore_list = []
-
-_active_elements = []
-_active_controls = []
-
-parsers = []
 
 _get_zoom_level = ->
     userAgent = root.navigator?.userAgent
