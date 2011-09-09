@@ -87,6 +87,9 @@ class RetinaControl
         
 
     setZoom: (zoom) ->
+        if @is_image
+            zoom *= @element.offsetWidth / @width
+        
         levels = parser.zoomLevelsForFilename @url
         [level] = levels[-1..]
         for l in levels
@@ -97,11 +100,15 @@ class RetinaControl
         path = parser.filenameForZoom level
         
         @cachePath path, ->
+            if @is_image
+                @element.setAttribute "width", @width unless @element.getAttribute "width"
+                @element.setAttribute "height", @height unless @element.getAttribute "height"
             @setImagePath path
+                
         #todo: size fixing
         
         @zoom = level
-    
+        
     release: ->
         @setZoom 1
 
