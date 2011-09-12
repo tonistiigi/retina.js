@@ -81,8 +81,8 @@ class RetinaControl
 
         init_size = (@width, @height) =>
             @setZoom _current_zoom_level
-
-        if @is_image and @element.complete then init_size @element
+        
+        if @is_image and @element.complete then init_size @element.naturalWidth, @element.naturalHeight
         else @cachePath @url, init_size
         
 
@@ -90,16 +90,16 @@ class RetinaControl
         if @is_image
             zoom *= @element.offsetWidth / @width
         
-        levels = parser.zoomLevelsForFilename @url
+        levels = @parser.zoomLevelsForFilename @url
         [level] = levels[-1..]
         for l in levels
             level = l if l>=zoom and l<level
 
         return if level == @zoom
         
-        path = parser.filenameForZoom level
+        path = @parser.filenameForZoom @url, level
         
-        @cachePath path, ->
+        @cachePath path, =>
             if @is_image
                 @element.setAttribute "width", @width unless @element.getAttribute "width"
                 @element.setAttribute "height", @height unless @element.getAttribute "height"
@@ -119,12 +119,13 @@ class RetinaControl
             @element.style['backgroundImage'] = "url(#{url})"
 
     cachePath: (url, callback) ->
-        @cached = {} if @cached?
+        @cached ?= {}
         return callback @cached[url] if url of @cached
         
         img = new Image
-        img.addEventListener "load", -> 
+        img.addEventListener "load", => 
             @cached[url] = [img.naturalWidth, img.naturalHeight]
+            console.log @cached[url]
             callback @cached[url]...
         img.src = url
 
@@ -181,7 +182,7 @@ scan = ->
     if root.document?.querySelectorAll
         for element in root.document.querySelectorAll "img[src],*[style*='background-image']"
             if element in _ignore_list then continue
-            if not element in _active_elements
+            if element not in _active_elements
                 activate_element element
         _schedule_scan 3000
 
@@ -189,8 +190,7 @@ scan = ->
 set_manual_mode = (manual=true) ->
     
 activate_element = (element, url="") ->    
-    if element in _active_elements then return
-    
+    return if element in _active_elements
     _ignore_list.splice (ignore_list.indexOf element), 1 if element in _ignore_list
     
     is_image = element instanceof root.HTMLImageElement
@@ -199,7 +199,7 @@ activate_element = (element, url="") ->
     
     for parser in parsers
         if parser.isValidFilename url
-            control = new RetinaControl element, parser is_image, url
+            control = new RetinaControl element, parser, is_image, url
             _active_controls.push control
             _active_elements.push element
             return true
