@@ -90,7 +90,14 @@ class RetinaControl
     setZoom: (zoom) ->
         if @is_image
             zoom *= @element.offsetWidth / @width
-        
+        else
+            [bgwidth] = root.getComputedStyle(@element,null)['background-size'].split " "
+            if match = bgwidth.match /(.+)(px|%)$/
+                if match[2] == "px"
+                    zoom *= (parseFloat match[1]) / @width
+                else
+                    zoom *= (parseFloat match[1]) / 100 * @element.offsetWidth / @width
+            
         levels = @parser.zoomLevelsForFilename @url
         [level] = levels[-1..]
         for l in levels
@@ -118,7 +125,9 @@ class RetinaControl
         if @is_image
             @element.src = url
         else
+            tmp_bgsize = root.getComputedStyle(@element,null)['background-size']
             @element.style['backgroundImage'] = "url(#{url})"
+            @element.style['backgroundSize'] = tmp_bgsize if tmp_bgsize != "auto auto"
 
     cachePath: (url, callback) ->
         @cached ?= {}
