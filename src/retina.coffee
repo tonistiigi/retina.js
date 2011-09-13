@@ -178,25 +178,27 @@ _schedule_scan = do ->
         root.clearTimeout next if next
         next = root.setTimeout scan, delay if delay >= 0
 
-_walker = null;
-scan = (reset = true) ->
-    _walker ?= document.createTreeWalker document.body, NodeFilter.SHOW_ELEMENT,
-        acceptNode: (node) ->
-            if node.tagName == "IMG" and node.getAttribute("src") or root.getComputedStyle(node)['background-image'] != "none"
-                NodeFilter.FILTER_ACCEPT
-            else
-                NodeFilter.FILTER_SKIP
-        , false
+
+scan = do ->
+    walker = null
+    (reset = true) ->
+        walker ?= document.createTreeWalker document.body, NodeFilter.SHOW_ELEMENT,
+            acceptNode: (node) ->
+                if node.tagName == "IMG" and node.getAttribute("src") or root.getComputedStyle(node)['background-image'] != "none"
+                    NodeFilter.FILTER_ACCEPT
+                else
+                    NodeFilter.FILTER_SKIP
+            , false
     
-    _walker.currentNode = document.body if reset
+        walker.currentNode = document.body if reset
     
-    count=0
-    while element = _walker.nextNode()
-        if element in _ignore_list then continue
-        if element not in _active_elements
-            activate_element element
-        return setTimeout (-> scan false), 50 if ++count > 50 # anti freeze
-    _schedule_scan 4000
+        count=0
+        while element = walker.nextNode()
+            if element in _ignore_list then continue
+            if element not in _active_elements
+                activate_element element
+            return setTimeout (-> scan false), 50 if ++count > 50 # anti freeze
+        _schedule_scan 4000
 
 
 set_manual_mode = (manual=true) ->
