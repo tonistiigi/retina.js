@@ -2,6 +2,7 @@
 root = this
 
 _current_zoom_level = 1
+_is_manual_mode = false
 _ignore_list = []
 
 _active_elements = []
@@ -174,9 +175,9 @@ set_parser = (parser) ->
 
 _schedule_scan = do -> 
     next = 0
-    (delay) ->
+    (delay = 4000) ->
         root.clearTimeout next if next
-        next = root.setTimeout scan, delay if delay >= 0
+        next = root.setTimeout scan, delay if delay >= 0 && !_is_manual_mode
 
 
 scan = do ->
@@ -194,14 +195,16 @@ scan = do ->
     
         count=0
         while element = walker.nextNode()
-            if element in _ignore_list then continue
-            if element not in _active_elements
-                activate_element element
-            return setTimeout (-> scan false), 50 if ++count > 50 # anti freeze
-        _schedule_scan 4000
+            continue if element in _ignore_list
+            activate_element element if element not in _active_elements
+            # anti freeze
+            return setTimeout (-> scan false), 50 if ++count > 50
+        _schedule_scan()
 
 
 set_manual_mode = (manual=true) ->
+    _is_manual_mode = !!manual
+    _schedule_scan()
     
 activate_element = (element, url="") ->    
     return if element in _active_elements
