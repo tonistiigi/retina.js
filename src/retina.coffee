@@ -101,11 +101,12 @@ class RetinaControl
         
         @cachePath path, =>
             if @is_image
-                @element.setAttribute "width", @width unless @element.getAttribute "width"
-                @element.setAttribute "height", @height unless @element.getAttribute "height"
+                @element.style['width'] || = "#{@width}px" unless @element.getAttribute "width"
+                @element.style['height'] || = "#{@height}px" unless @element.getAttribute "height"
+                # todo: does not work if only one is defined
+            else
+                @element.style['backgroundSize'] ||= "#{@width}px #{@height}px"
             @setImagePath path
-                
-        #todo: size fixing
         
         @zoom = level
         
@@ -125,7 +126,6 @@ class RetinaControl
         img = new Image
         img.addEventListener "load", => 
             @cached[url] = [img.naturalWidth, img.naturalHeight]
-            console.log @cached[url]
             callback @cached[url]...
         img.src = url
 
@@ -178,13 +178,25 @@ _schedule_scan = do ->
         root.clearTimeout next if next
         next = root.setTimeout scan, delay if delay >= 0
 
-scan = ->
-    if root.document?.querySelectorAll
-        for element in root.document.querySelectorAll "img[src],*[style*='background-image']"
-            if element in _ignore_list then continue
-            if element not in _active_elements
-                activate_element element
-        _schedule_scan 3000
+_walker = null;
+scan = (reset = true) ->
+    _walker ?= document.createTreeWalker document.body, NodeFilter.SHOW_ELEMENT,
+        acceptNode: (node) ->
+            if node.tagName == "IMG" and node.getAttribute("src") or root.getComputedStyle(node)['background-image'] != "none"
+                NodeFilter.FILTER_ACCEPT
+            else
+                NodeFilter.FILTER_SKIP
+        , false
+    
+    _walker.currentNode = document.body if reset
+    
+    count=0
+    while element = _walker.nextNode()
+        if element in _ignore_list then continue
+        if element not in _active_elements
+            activate_element element
+        return setTimeout (-> scan false), 50 if ++count > 50 # anti freeze
+    _schedule_scan 4000
 
 
 set_manual_mode = (manual=true) ->
@@ -195,7 +207,7 @@ activate_element = (element, url="") ->
     
     is_image = element instanceof root.HTMLImageElement
     
-    url or= if is_image then element.src else element.style['backgroundImage'].match(/url\((.+)\)/)[1]
+    url or= if is_image then element.src else root.getComputedStyle(element)['background-image'].match(/url\((.+)\)/)[1]
     
     for parser in parsers
         if parser.isValidFilename url
