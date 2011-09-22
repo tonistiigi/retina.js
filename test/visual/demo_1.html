@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Retina.js Demo</title>
+    <meta name="viewport" content="width=device-width" />
     <script src="../../lib/retina.js"></script>
     <style type="text/css">
         #test_css_bg {
@@ -20,15 +21,43 @@
             background-size: 190px 90px;
         }
         #test_bg_offset {
-            background: url(assets/google_3@.png) 100px 40px;
-            
+            background: url(assets/google_3@.png) 50px 20px;
             background-size: 100px auto;
             width: 90%;
             height: 93px;
         }
+        .tests {
+            padding: 20px auto;
+        }
+        .box {
+            width : 300px;
+            margin: 10px;
+            float: left;
+            border: 1px solid #eee;
+            height: 200px;
+        }
+        .box .msg {
+            padding: 10px 0;
+            font-family: Arial;
+            font-size: 18px;
+            text-align: center;
+        }
+        .box .test {
+            padding: 10px;
+            overflow: hidden;
+        }
     </style>
   </head>
   <body>
+      <div class="tests">
+      <div class="box">
+        <div class="msg">
+            No Retina
+        </div>
+        <div class="test">
+            <img src="assets/google.png"/>
+        </div>
+      </div>
       
       <div class="box">
         <div class="msg">
@@ -38,7 +67,7 @@
             <img src="assets/google_3@.png"/>
         </div>
       </div>
-      
+    
       
       <div class="box">
         <div class="msg">
@@ -65,7 +94,7 @@
             Background defined in css
         </div>
         <div class="test">
-            <div if="test_css_bg"></div>
+            <div id="test_css_bg"></div>
         </div>
       </div>
       
@@ -101,10 +130,20 @@
             Image with only width set
         </div>
         <div class="test">
-            <img src="assets/google_3@.png" width="100"/>
+            <img src="assets/google_3@.png" width="130"/>
         </div>
       </div>
-      
+      </div>
+
+      <div class="box">
+        <div class="msg">
+            Image with only height set
+        </div>
+        <div class="test">
+            <img src="assets/google_3@.png" width="150%"/>
+        </div>
+      </div>
+      </div>
       
   </body>
 </html>
