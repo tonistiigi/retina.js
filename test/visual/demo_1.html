@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Retina.js Demo</title>
+    <script src="../../lib/retina.js"></script>
+    <style type="text/css">
+        #test_css_bg {
+            background: url(assets/google_3@.png);
+            width: 250px;
+            height: 93px;
+        }
+        #test_simple_bg {
+            padding: 30px;
+            float: left;
+        }
+        #test_bg_size {
+            background: url(assets/google_3@.png);
+            width: 250px;
+            height: 93px;
+            background-size: 190px 90px;
+        }
+        #test_bg_offset {
+            background: url(assets/google_3@.png) 100px 40px;
+            
+            background-size: 100px auto;
+            width: 90%;
+            height: 93px;
+        }
+    </style>
+  </head>
+  <body>
+      
+      <div class="box">
+        <div class="msg">
+            Simple image
+        </div>
+        <div class="test">
+            <img src="assets/google_3@.png"/>
+        </div>
+      </div>
+      
+      
+      <div class="box">
+        <div class="msg">
+            Simple background
+        </div>
+        <div class="test">
+            <div style="background:url(assets/google_3@.png)" id="test_simple_bg">
+                Lorem ipsum dolor sit amet
+            </div>
+        </div>
+      </div>
+      
+      <div class="box">
+        <div class="msg">
+            Simple image with custom size
+        </div>
+        <div class="test">
+            <img src="assets/google_3@.png" width="150" height="56"/>
+        </div>
+      </div>
+      
+      <div class="box">
+        <div class="msg">
+            Background defined in css
+        </div>
+        <div class="test">
+            <div if="test_css_bg"></div>
+        </div>
+      </div>
+      
+      <div class="box">
+        <div class="msg">
+            Image with custom size in percentages
+        </div>
+        <div class="test">
+            <img src="assets/google_3@.png" width="50%" height="50%"/>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="msg">
+            Custom background size
+        </div>
+        <div class="test">
+            <div id="test_bg_size"></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="msg">
+            Custom background offset
+        </div>
+        <div class="test">
+            <div id="test_bg_offset"></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="msg">
+            Image with only width set
+        </div>
+        <div class="test">
+            <img src="assets/google_3@.png" width="100"/>
+        </div>
+      </div>
+      
+      
+  </body>
+</html>
