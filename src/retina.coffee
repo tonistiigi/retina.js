@@ -109,9 +109,10 @@ class RetinaControl
         
         @cachePath path, =>
             if @is_image
-                @element.style['width'] || = "#{@width}px" unless @element.getAttribute "width"
-                @element.style['height'] || = "#{@height}px" unless @element.getAttribute "height"
-                # todo: does not work if only one is defined
+                unless (@element.getAttribute "width") or (@element.getAttribute "height")
+                    #todo: does not take into account when defined in style or css
+                    @element.style['width'] || = "#{@width}px"
+                    @element.style['height'] || = "#{@height}px"
             else
                 @element.style['backgroundSize'] ||= "#{@width}px #{@height}px"
             @setImagePath path
@@ -127,7 +128,7 @@ class RetinaControl
         else
             tmp_bgsize = root.getComputedStyle(@element,null)['background-size']
             @element.style['backgroundImage'] = "url(#{url})"
-            @element.style['backgroundSize'] = tmp_bgsize if tmp_bgsize != "auto auto"
+            @element.style['backgroundSize'] = tmp_bgsize if tmp_bgsize != "auto auto" && !root.navigator.userAgent.match(/Chrome/)
 
     cachePath: (url, callback) ->
         @cached ?= {}
